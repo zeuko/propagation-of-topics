@@ -1,9 +1,10 @@
 package pl.edu.agh.ztis.model;
 
-import java.sql.Date;
+import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 
+// TODO: add builder?
 public class Note {
 
 	@Id
@@ -14,7 +15,7 @@ public class Note {
 	private String text1;
 	private String text2;
 	private String tag;
-	private String nbTabDetected;
+	private int nbTabDetected;
 
 	public long getId() {
 		return id;
@@ -36,8 +37,8 @@ public class Note {
 		return time;
 	}
 
-	public void setTime(Date time) {
-		this.time = time;
+	public void setTime(Date date) {
+		this.time = date;
 	}
 
 	public String getText1() {
@@ -64,11 +65,11 @@ public class Note {
 		this.tag = tag;
 	}
 
-	public String getNbTabDetected() {
+	public int getNbTabDetected() {
 		return nbTabDetected;
 	}
 
-	public void setNbTabDetected(String nbTabDetected) {
+	public void setNbTabDetected(int nbTabDetected) {
 		this.nbTabDetected = nbTabDetected;
 	}
 
