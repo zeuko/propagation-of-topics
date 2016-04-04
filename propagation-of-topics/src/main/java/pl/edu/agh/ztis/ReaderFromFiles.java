@@ -20,25 +20,31 @@ public class ReaderFromFiles {
     @Autowired
     private NoteRepository noteRepository;
 
-    public void lookupFiles(String name) throws FileNotFoundException {
+    public long lookupFiles(String name) throws FileNotFoundException {
         File dir = new File(name);
         File[] files = dir.listFiles();
 
+        long count = 0;
         for (File file : files) {
             if (file.isDirectory()) {
                 List<Note> notes = this.readNotesBean.getNotesFromFile(new File(file, "rss_unique_TAG_country_Ebola.csv"));
                 noteRepository.save(notes);
+                count += notes.size();
             }
         }
+        return count;
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        if (args.length < 1){
+        if (args.length < 1) {
             System.out.println("Usage: <path_to Geomedia_extract_AGENDA>");
         }
         ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
         ReaderFromFiles app = context.getBean(ReaderFromFiles.class);
-        app.lookupFiles(args[0]);
+        long start = System.currentTimeMillis();
+        long load = app.lookupFiles(args[0]);
+        long end = System.currentTimeMillis();
+        System.out.println("Loaded " + load + " notes from files in " + (end - start));
 
         // do sth with app
     }
