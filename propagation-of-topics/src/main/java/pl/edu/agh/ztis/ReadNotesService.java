@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import pl.edu.agh.ztis.exceptions.NotesParsingException;
 import pl.edu.agh.ztis.helper.TimeHelper;
+import pl.edu.agh.ztis.model.Language;
 import pl.edu.agh.ztis.model.Note;
 
 
@@ -81,7 +82,7 @@ public class ReadNotesService {
 		note.setCountry(country);
 		note.setTag(tagEbola);
 		if (feed.contains("_"))
-			note.setLanguage(feed.substring(0, feed.indexOf('_')));
+			note.setLanguage(Language.valueOf(feed.substring(0, feed.indexOf('_')).toUpperCase()));
 		return note;
 	}
 	

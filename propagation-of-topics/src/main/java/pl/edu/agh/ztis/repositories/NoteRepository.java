@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import pl.edu.agh.ztis.model.Note;
 
 @Repository
-public interface NoteRepository extends MongoRepository<Note, String> {
+public interface NoteRepository extends MongoRepository<Note, Long> {
 
 }
