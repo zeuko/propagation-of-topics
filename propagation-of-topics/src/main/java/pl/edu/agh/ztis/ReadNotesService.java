@@ -70,17 +70,18 @@ public class ReadNotesService {
 		String time = array[2];
 		String text1 = array[3];
 		String text2 = array[4];
-		String tag = array[5];
-		String nb_tag_detected = array[6];
-		
+		String country = array[5];
+		String tagEbola = array[6];
 		Note note = new Note();
 		note.setId(Long.parseLong(id));
 		note.setFeedIdentifier(feed);
 		note.setTime(TimeHelper.parseStringToJavaDate(time));
 		note.setText1(text1);
 		note.setText2(text2);
-		note.setTag(tag);
-		note.setNbTabDetected(Integer.parseInt(nb_tag_detected));
+		note.setCountry(country);
+		note.setTag(tagEbola);
+		if (feed.contains("_"))
+			note.setLanguage(feed.substring(0, feed.indexOf('_')));
 		return note;
 	}
 	

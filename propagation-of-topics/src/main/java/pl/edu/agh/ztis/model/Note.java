@@ -1,6 +1,7 @@
 package pl.edu.agh.ztis.model;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 
@@ -15,7 +16,27 @@ public class Note {
 	private String text1;
 	private String text2;
 	private String tag;
+	private List<String> tags;
+	private String country;
+
 	private int nbTabDetected;
+	private String language;
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
 
 	public long getId() {
 		return id;
@@ -73,4 +94,11 @@ public class Note {
 		this.nbTabDetected = nbTabDetected;
 	}
 
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
 }

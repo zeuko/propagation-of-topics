@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 
-import pl.edu.agh.ztis.Application;
+import pl.edu.agh.ztis.ReaderFromFiles;
 
 @Configuration
-@ComponentScan(basePackageClasses = Application.class, excludeFilters = @Filter({Controller.class, Configuration.class}))
+@ComponentScan(basePackageClasses = ReaderFromFiles.class, excludeFilters = @Filter({Controller.class, Configuration.class}))
 @Import(MongoConfig.class)
 @EnableScheduling
 class ApplicationConfig {
