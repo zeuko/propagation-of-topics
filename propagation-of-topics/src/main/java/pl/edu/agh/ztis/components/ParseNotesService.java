@@ -1,4 +1,4 @@
-package pl.edu.agh.ztis;
+package pl.edu.agh.ztis.components;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +24,7 @@ import pl.edu.agh.ztis.model.Note;
  * @author Patrycja
  */
 @Component
-public class ReadNotesService {
+public class ParseNotesService {
 	
 	
 	public List<Note> getNotesFromFile(String filepath) throws FileNotFoundException {

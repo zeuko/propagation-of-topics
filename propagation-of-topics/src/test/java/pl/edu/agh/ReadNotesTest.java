@@ -10,7 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import pl.edu.agh.ztis.ReadNotesService;
+import pl.edu.agh.ztis.components.ParseNotesService;
 import pl.edu.agh.ztis.helper.FileHelper;
 import pl.edu.agh.ztis.helper.TimeHelper;
 import pl.edu.agh.ztis.model.Note;
@@ -18,11 +18,11 @@ import pl.edu.agh.ztis.model.Note;
 public class ReadNotesTest {
 
 	
-	ReadNotesService sut;
+	ParseNotesService sut;
 	
 	@Before
 	public void init() throws Exception {
-		sut = new ReadNotesService();
+		sut = new ParseNotesService();
 		System.out.println();
 	}
 	

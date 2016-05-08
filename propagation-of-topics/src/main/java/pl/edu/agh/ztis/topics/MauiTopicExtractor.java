@@ -1,14 +1,11 @@
-package pl.edu.agh.ztis;
+package pl.edu.agh.ztis.topics;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashSet;
-
-import org.apache.commons.io.FileUtils;
 
 import maui.filters.MauiFilter;
 import maui.main.MauiModelBuilder;
@@ -17,48 +14,57 @@ import maui.stemmers.Stemmer;
 import maui.stopwords.Stopwords;
 import maui.stopwords.StopwordsEnglish;
 import maui.vocab.Vocabulary;
+
+import org.apache.commons.io.FileUtils;
+
+import com.google.common.collect.Lists;
+
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.Option;
-
 
 /**
- * This class shows how to use Maui on a single document
- * or just a string of text.
+ * This class shows how to use Maui on a single document or just a string of
+ * text.
+ * 
  * @author alyona
  *
  */
-public class MauiTest {
+public class MauiTopicExtractor {
 
 	/** Maui filter object */
 	private MauiFilter extractionModel = null;
-	
+
 	private Vocabulary vocabulary = null;
 	private Stemmer stemmer;
 	private Stopwords stopwords;
 	private String language = "en";
-	
+
 	/**
 	 * Constructor, which loads the data
-	 * @param dataDirectory - e.g. Maui's main directory (should has "data" dir in it)
-	 * @param vocabularyName - name of the rdf vocabulary
-	 * @param modelName - name of the model
+	 * 
+	 * @param dataDirectory
+	 *            - e.g. Maui's main directory (should has "data" dir in it)
+	 * @param vocabularyName
+	 *            - name of the rdf vocabulary
+	 * @param modelName
+	 *            - name of the model
 	 */
-	public MauiTest(String dataDirectory, String vocabularyName, String modelName) {
-	
+	public MauiTopicExtractor(String dataDirectory, String vocabularyName, String modelName) {
+
 		stemmer = new PorterStemmer();
 		String englishStopwords = dataDirectory + "data/stopwords/stopwords_en.txt";
 		stopwords = new StopwordsEnglish(englishStopwords);
-		String vocabularyDirectory = dataDirectory +  "data/vocabularies/";
-		String modelDirectory = dataDirectory +  "data/models";
+		String vocabularyDirectory = dataDirectory + "data/vocabularies/";
+		String modelDirectory = dataDirectory + "data/models";
 		loadVocabulary(vocabularyDirectory, vocabularyName);
 		loadModel(modelDirectory, modelName, vocabularyName);
 	}
 
 	/**
 	 * Loads a vocabulary from a given directory
+	 * 
 	 * @param vocabularyDirectory
 	 * @param vocabularyName
 	 */
@@ -76,9 +82,10 @@ public class MauiTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Loads the model
+	 * 
 	 * @param modelDirectory
 	 * @param modelName
 	 * @param vocabularyName
@@ -103,10 +110,12 @@ public class MauiTest {
 		extractionModel.setStopwords(stopwords);
 
 		extractionModel.setVocabulary(vocabulary);
+		
 	}
 
 	/**
 	 * Main method to extract the main topics from a given text
+	 * 
 	 * @param text
 	 * @param topicsPerDocument
 	 * @return
@@ -115,7 +124,8 @@ public class MauiTest {
 	public ArrayList<String> extractTopicsFromText(String text, int topicsPerDocument) throws Exception {
 
 		if (text.length() < 5) {
-			throw new Exception("Text is too short!");
+			return Lists.newArrayList();
+			//throw new Exception("Text is too short!");
 		}
 
 		extractionModel.setWikipedia(null);
@@ -153,9 +163,8 @@ public class MauiTest {
 
 		for (int i = 0; i < topicsPerDocument; i++) {
 			if (topRankedInstances[i] != null) {
-				String topic = topRankedInstances[i].stringValue(extractionModel
-						.getOutputFormIndex());
-			
+				String topic = topRankedInstances[i].stringValue(extractionModel.getOutputFormIndex());
+
 				topics.add(topic);
 			}
 		}
@@ -165,53 +174,20 @@ public class MauiTest {
 
 	/**
 	 * Triggers topic extraction from a text file
-	 * @param filePath
-	 * @param numberOfTopics
-	 * @return
-	 * @throws Exception
+	 * 
 	 */
 	public ArrayList<String> extractTopicsFromFile(String filePath, int numberOfTopics) throws Exception {
 		File documentTextFile = new File(filePath);
 		String documentText = FileUtils.readFileToString(documentTextFile);
 		return extractTopicsFromText(documentText, numberOfTopics);
 	}
+
 	
-	/**
-	 * Main method for testing MauiWrapper
-	 * Add the path to a text file as command line argument
-	 * @param args
-	 * @throws Exception 
-	 */
-	public static void main(String[] args) throws Exception {
-		
-		//generateModel();
-
-		String vocabularyName = "agrovoc_en";
-		String modelName = "keyphrextr";
-		String dataDirectory = "./Maui1.2/";
-		
-		MauiTest wrapper = new MauiTest(dataDirectory, vocabularyName, modelName);
-		
-		String filePath = "./src/main/resources/test.txt";
-		
-		try {
-			
-			ArrayList<String> keywords = wrapper.extractTopicsFromFile(filePath, 15);
-			for (String keyword : keywords) {
-				System.out.println("Keyword: " + keyword);
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
-
-	private static void generateModel() throws Exception {
+	public static void generateModel(String outputPath) throws Exception {
 		String path = "D:\\uczelnia\\ztis\\workspace\\Maui1.2\\data\\model_training";
-		MauiModelBuilder 		modelBuilder = new MauiModelBuilder();
-		modelBuilder.setOptions(new String[] {"-l", path, "-m",  "../Maui1.2/data/models/model", "-f", "text"});
-		
+		MauiModelBuilder modelBuilder = new MauiModelBuilder();
+		modelBuilder.setOptions(new String[] { "-l", path, "-m", "../Maui1.2/data/models/model", "-f", "text" });
+
 		// Output what options are used
 		if (modelBuilder.getDebug() == true) {
 			System.err.print("Building model with options: ");

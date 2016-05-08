@@ -22,6 +22,7 @@ public class TestMongoDBApplication {
 	}
 
 	public static void main(String[] args) {
+		@SuppressWarnings("resource")
 		ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
 		TestMongoDBApplication testApp = context.getBean(TestMongoDBApplication.class);
 		testApp.test();
