@@ -38,7 +38,7 @@ public class NoteTaggingApplication {
 
 
 	private void test() throws Exception {
-		List<Note> notes = noteRepository.findByText1Containing("Iraq");
+		List<Note> notes = noteRepository.findAll();
 		notesTagger.tagNotes(notes, MAUI_TAG_LIMIT_PER_TEXT);
 	}
 }
