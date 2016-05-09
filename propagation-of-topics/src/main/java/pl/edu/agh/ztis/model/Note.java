@@ -1,5 +1,6 @@
 package pl.edu.agh.ztis.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,8 @@ public class Note {
 	private String text1;
 	private String text2;
 	private String tag;
-	private List<String> tags;
+	private List<String> tags = new ArrayList<>();
+	private List<String> pythonTags = new ArrayList<>();
 	private String country;
 
 	private int nbTabDetected;
@@ -100,5 +102,13 @@ public class Note {
 
 	public Language getLanguage() {
 		return language;
+	}
+
+	public List<String> getPythonTags() {
+		return pythonTags;
+	}
+
+	public void setPythonTags(List<String> pythonTags) {
+		this.pythonTags = pythonTags;
 	}
 }

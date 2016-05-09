@@ -92,7 +92,7 @@ class Tag:
     '''
     General class for tags (small units of text)
     '''
-    
+
     def __init__(self, string, stem=None, rating=1.0, proper=False,
                  terminal=False):
         '''
@@ -107,13 +107,13 @@ class Tag:
 
         @returns: a new L{Tag} object
         '''
-            
-        self.string  = string
+
+        self.string = string
         self.stem = stem or string
         self.rating = rating
         self.proper = proper
         self.terminal = terminal
-        
+
     def __eq__(self, other):
         return self.stem == other.stem
 
@@ -131,7 +131,7 @@ class MultiTag(Tag):
     '''
     Class for aggregates of tags (usually next to each other in the document)
     '''
-    
+
     def __init__(self, tail, head=None):
         '''
         @param tail: the L{Tag} object to add to the first part (head)
@@ -139,7 +139,7 @@ class MultiTag(Tag):
 
         @returns: a new L{MultiTag} object
         '''
-        
+
         if not head:
             Tag.__init__(self, tail.string, tail.stem, tail.rating,
                          tail.proper, tail.terminal)
@@ -155,7 +155,7 @@ class MultiTag(Tag):
 
             self.subratings = head.subratings + [tail.rating]
             self.rating = self.combined_rating()
-                                           
+
     def combined_rating(self):
         '''
         Method that computes the multitag's rating from the ratings of unit
@@ -166,12 +166,12 @@ class MultiTag(Tag):
         
         @returns: the rating of the multitag
         '''
-        
+
         # by default, the rating of a multitag is the geometric mean of its
         # unit subtags' ratings
         product = reduce(lambda x, y: x * y, self.subratings, 1.0)
         root = self.size
-        
+
         # but proper nouns shouldn't be penalized by stopwords
         if product == 0.0 and self.proper:
             nonzero = [r for r in self.subratings if r > 0.0]
@@ -179,10 +179,10 @@ class MultiTag(Tag):
                 return 0.0
             product = reduce(lambda x, y: x * y, nonzero, 1.0)
             root = len(nonzero)
-            
+
         return product ** (1.0 / root)
 
-    
+
 class Reader:
     '''
     Class for parsing a string of text to obtain tags
@@ -196,7 +196,7 @@ class Reader:
     match_paragraphs = re.compile(r'[\.\?!\t\n\r\f\v]+')
     match_phrases = re.compile(r'[,;:\(\)\[\]\{\}<>]+')
     match_words = re.compile(r'[\w\-\'_/&]+')
-    
+
     def __call__(self, text):
         '''
         @param text: the string of text to be tagged
@@ -248,11 +248,11 @@ class Reader:
 
         @returns:    the processed text
         '''
-        
+
         text = self.match_apostrophes.sub('\'', text)
         return text
 
-    
+
 class Stemmer:
     '''
     Class for extracting the stem of a word
@@ -272,7 +272,7 @@ class Stemmer:
 
         @returns: a new L{Stemmer} object
         '''
-        
+
         if not stemmer:
             from stemming import porter2
             stemmer = porter2
@@ -287,8 +287,8 @@ class Stemmer:
 
         string = self.preprocess(tag.string)
         tag.stem = self.stemmer.stem(string)
-        return tag    
-        
+        return tag
+
     def preprocess(self, string):
         '''
         @param string: a string to be treated before passing it to the stemmer
@@ -298,13 +298,13 @@ class Stemmer:
 
         # delete hyphens and underscores
         string = self.match_hyphens.sub('', string)
-        
+
         # get rid of contractions and possessive forms
         match = self.match_contractions.match(string)
         if match: string = match.group(1)
-        
+
         return string
-    
+
 
 class Rater:
     '''
@@ -324,10 +324,10 @@ class Rater:
 
         @returns: a new L{Rater} object
         '''
-        
+
         self.weights = weights
         self.multitag_size = multitag_size
-        
+
     def __call__(self, tags):
         '''
         @param tags: a list of (preferably stemmed) tags
@@ -342,7 +342,7 @@ class Rater:
         clusters = collections.defaultdict(collections.Counter)
         proper = collections.defaultdict(int)
         ratings = collections.defaultdict(float)
-        
+
         for t in multitags:
             clusters[t][t.string] += 1
             if t.proper:
@@ -350,14 +350,14 @@ class Rater:
                 ratings[t] = max(ratings[t], t.rating)
 
         term_count = collections.Counter(multitags)
-                
+
         for t, cnt in term_count.iteritems():
             t.string = clusters[t].most_common(1)[0][0]
             proper_freq = proper[t] / cnt
             if proper_freq >= 0.5:
                 t.proper = True
                 t.rating = ratings[t]
-        
+
         # purge duplicates, one-character tags and stopwords
         unique_tags = set(t for t in term_count
                           if len(t.string) > 1 and t.rating > 0.0)
@@ -369,33 +369,33 @@ class Rater:
                     s = Tag(' '.join(words[i:i + l]))
                     relative_freq = cnt / term_count[s]
                     if ((relative_freq == 1.0 and t.proper) or
-                        (relative_freq >= 0.5 and t.rating > 0.0)):
+                            (relative_freq >= 0.5 and t.rating > 0.0)):
                         unique_tags.discard(s)
                     else:
                         unique_tags.discard(t)
-        
+
         return sorted(unique_tags)
 
     def rate_tags(self, tags):
         '''
         @param tags: a list of tags to be assigned a rating
         '''
-        
+
         term_count = collections.Counter(tags)
-        
+
         for t in tags:
             # rating of a single tag is term frequency * weight
             t.rating = term_count[t] / len(tags) * self.weights.get(t.stem, 1.0)
-    
+
     def create_multitags(self, tags):
         '''
         @param tags: a list of tags (respecting the order in the text)
 
         @returns: a list of multitags
         '''
-        
+
         multitags = []
-        
+
         for i in xrange(len(tags)):
             t = MultiTag(tags[i])
             multitags.append(t)
@@ -407,8 +407,8 @@ class Rater:
                     multitags.append(t)
 
         return multitags
-    
-    
+
+
 class Tagger:
     '''
     Master class for tagging text documents
@@ -425,7 +425,7 @@ class Tagger:
 
         @returns: a new L{Tagger} object
         '''
-        
+
         self.reader = reader
         self.stemmer = stemmer
         self.rater = rater
@@ -436,7 +436,7 @@ class Tagger:
         @param tags_number: number of best tags to be returned
 
         Returns: a list of (hopefully) relevant tags
-        ''' 
+        '''
 
         tags = self.reader(text)
         tags = map(self.stemmer, tags)
@@ -445,9 +445,7 @@ class Tagger:
         return tags[:tags_number]
 
 
-
 if __name__ == '__main__':
-
     import glob
     import pickle
     import sys
@@ -457,7 +455,7 @@ if __name__ == '__main__':
         documents = glob.glob('tests/*')
     else:
         documents = sys.argv[1:]
-    
+
     print 'Loading dictionary... '
     weights = pickle.load(open('data/dict.pkl', 'rb'))
 
@@ -467,4 +465,3 @@ if __name__ == '__main__':
         with open(doc, 'r') as file:
             print 'Tags for ', doc, ':'
             print tagger(file.read())
-          
