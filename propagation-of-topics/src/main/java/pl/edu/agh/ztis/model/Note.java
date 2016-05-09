@@ -20,7 +20,7 @@ public class Note {
 	private String country;
 
 	private int nbTabDetected;
-	private String language;
+	private Language language;
 
 	public List<String> getTags() {
 		return tags;
@@ -94,11 +94,11 @@ public class Note {
 		this.nbTabDetected = nbTabDetected;
 	}
 
-	public void setLanguage(String language) {
+	public void setLanguage(Language language) {
 		this.language = language;
 	}
 
-	public String getLanguage() {
+	public Language getLanguage() {
 		return language;
 	}
 }
