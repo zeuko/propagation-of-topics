@@ -20,16 +20,15 @@ import pl.edu.agh.ztis.repositories.NoteRepository;
 /**
  * Reads all notes from given directory and saves it to the database.
  * CLEARS DATABASE BEFORE ADDING NEW DATA.
- *
  */
 @Component
 public class FillDatabaseApplication {
 
-	@Autowired
-	private ParseNotesService readNotesBean;
+    @Autowired
+    private ParseNotesService readNotesBean;
 
-	@Autowired
-	private NoteRepository noteRepository;
+    @Autowired
+    private NoteRepository noteRepository;
     @Option(name = "-c", aliases = "--clean", usage = "clean database before loading files")
     boolean clean = false;
     @Argument(usage = "path to Geomedia_extract_AGENDA", required = true)
@@ -37,34 +36,35 @@ public class FillDatabaseApplication {
 
     public long lookupFiles() throws FileNotFoundException {
         File dir = new File(geomediaPath);
-		File[] files = dir.listFiles();
+        File[] files = dir.listFiles();
 
-		long count = 0;
-		for (File file : files) {
-			if (file.isDirectory()) {
-				List<Note> notes = this.readNotesBean.getNotesFromFile(new File(file, "rss_unique_TAG_country_Ebola.csv"));
-				noteRepository.save(notes);
-				count += notes.size();
-			}
-		}
-		return count;
-	}
+        long count = 0;
+        for (File file : files) {
+            if (file.isDirectory()) {
+                List<Note> notes = this.readNotesBean.getNotesFromFile(new File(file, "rss_unique_TAG_country_Ebola.csv"));
+                noteRepository.save(notes);
+                count += notes.size();
+            }
+        }
+        return count;
+    }
 
-	public static void main(String[] args) throws FileNotFoundException , CmdLineException {
-		ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
-		FillDatabaseApplication app = context.getBean(FillDatabaseApplication.class);
+    public static void main(String[] args) throws FileNotFoundException, CmdLineException {
+        ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
+        FillDatabaseApplication app = context.getBean(FillDatabaseApplication.class);
         CmdLineParser cmdLineParser = new CmdLineParser(app);
         cmdLineParser.parseArgument(args);
 
-        if (app.clean){
+        if (app.clean) {
             app.cleanDb();
         }
-		long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         long load = app.lookupFiles();
-		long end = System.currentTimeMillis();
-		System.out.println("Loaded " + load + " notes from files in " + (end - start));
-	}
-	    private void cleanDb() {
+        long end = System.currentTimeMillis();
+        System.out.println("Loaded " + load + " notes from files in " + (end - start));
+    }
+
+    private void cleanDb() {
         System.out.println("Cleaning database...");
         noteRepository.deleteAll();
         System.out.println("Database cleaned.");
