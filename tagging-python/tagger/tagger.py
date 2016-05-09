@@ -445,6 +445,11 @@ class Tagger:
         return tags[:tags_number]
 
 
+def getTagger(pkl='data/dict.pkl'):
+    import pickle
+    weights = pickle.load(open(pkl, 'rb'))
+    return Tagger(Reader(), Stemmer(), Rater(weights))
+
 if __name__ == '__main__':
     import glob
     import pickle

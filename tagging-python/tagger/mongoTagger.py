@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 import argparse
-from trace import pickle
 
 from pymongo import MongoClient
 
@@ -18,11 +17,6 @@ parser.add_argument('--no-verbose', dest='verbose', action='store_false')
 parser.set_defaults(verbose=False)
 
 
-def getTagger(pkl='data/dict.pkl'):
-    weights = pickle.load(open(pkl, 'rb'))
-    return tagger.Tagger(tagger.Reader(), tagger.Stemmer(), tagger.Rater(weights))
-
-
 if __name__ == '__main__':
     args = parser.parse_args()
     client = MongoClient(args.mongoDb_host, args.mongoDb_port)
@@ -30,7 +24,7 @@ if __name__ == '__main__':
     notesCollection = client.notes.note
     notes = notesCollection.find({'language': args.language})
 
-    tagger = getTagger(args.dictionary)
+    tagger = tagger.getTagger(args.dictionary)
 
     for note in notes:
         if args.print_only:
