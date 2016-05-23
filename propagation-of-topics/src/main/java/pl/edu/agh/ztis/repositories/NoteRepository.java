@@ -20,4 +20,5 @@ public interface NoteRepository extends MongoRepository<Note, String> {
 
 	public List<Note> findByLanguage(Language lang);
 	
+	List<Note> findAllByLanguage(Language language);
 }
