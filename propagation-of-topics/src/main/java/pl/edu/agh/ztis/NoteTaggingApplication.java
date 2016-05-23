@@ -2,18 +2,23 @@ package pl.edu.agh.ztis;
 
 import java.util.List;
 
-import maui.stopwords.StopwordsEnglish;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 import pl.edu.agh.ztis.components.TagNotes;
+import pl.edu.agh.ztis.model.Language;
 import pl.edu.agh.ztis.model.Note;
 import pl.edu.agh.ztis.repositories.NoteRepository;
 
 
+/**
+ * Use high -Xmx value for large notes repository!
+ * 
+ * @author Patrycja
+ *
+ */
 @Component
 public class NoteTaggingApplication {
 
@@ -38,7 +43,8 @@ public class NoteTaggingApplication {
 
 
 	private void test() throws Exception {
-		List<Note> notes = noteRepository.findAll();
+		List<Note> notes = noteRepository.findByLanguage(Language.EN);
+		System.out.println(notes.size());
 		notesTagger.tagNotes(notes, MAUI_TAG_LIMIT_PER_TEXT);
 	}
 }

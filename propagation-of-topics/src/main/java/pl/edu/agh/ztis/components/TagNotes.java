@@ -54,12 +54,15 @@ public class TagNotes {
 
 		for (Note note : notes) {
 			try {
+				if (note.getTags() != null && !note.getTags().isEmpty()) {
+					continue;
+				}
 				Set<String> keywords = getMauiTagsForNote(note, tagsPerNotePartForMaui);
 				keywords.addAll(getCustomTagsForNote(note));
 				keywords.addAll(getCapitalLetterWordsFromNote(note));
 				System.out.println(keywords);
-
-				List<String> tags = note.getTags();
+				
+				List<String> tags = note.getPythonTags();
 				if (tags != null && !tags.isEmpty()) {
 					keywords.addAll(tags);
 				}
