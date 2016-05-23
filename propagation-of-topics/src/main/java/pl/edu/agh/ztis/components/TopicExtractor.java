@@ -56,17 +56,16 @@ public class TopicExtractor {
         SparseMatrix resultMatrix = new MarkovClustering()
                 .run(graph, maxResidual, pGamma, loopGain, maxZero);
         long time3 = System.currentTimeMillis();
-        System.out.println("Markov Clustering finished in " + 0.0001 * (time3 - time2) + "s");
+        System.out.println("Markov Clustering finished in " + 0.001 * (time3 - time2) + "s");
         List<Set<String>> topics = extractResults(resultMatrix);
-        topics.forEach(tags -> System.out.println(tags.stream().collect(Collectors.joining(", "))));
         List<Topic> result = topics.stream()
-                .map(tags -> {
-                    List<Note> notesForThisTags = tags.stream()
-                            .map(tagsToNotes::get)
-                            .flatMap(Set::stream)
-                            .distinct()
+                .map(topicTags -> {
+                    List<Long> notesForThisTags = notes.stream()
+                            .filter(note -> note.getAllTags().containsAll(topicTags))
+                            .map(Note::getId)
                             .collect(Collectors.toList());
-                    return new Topic("", new LinkedList<>(tags), tags.size(), notesForThisTags, notesForThisTags.size(), "mcl-java", minWeight);
+                    System.out.println(notesForThisTags.size() + " ----> " + topicTags.stream().collect(Collectors.joining(", ")));
+                    return new Topic("", new LinkedList<>(topicTags), topicTags.size(), notesForThisTags, notesForThisTags.size(), "mcl-java", minWeight);
                 }).collect(Collectors.toList());
 
         long time4 = System.currentTimeMillis();
@@ -109,8 +108,7 @@ public class TopicExtractor {
 
     private SparseMatrix generateGraph(List<Note> notes, int minWeight) {
         notes.forEach(note -> {
-            Set<String> allTags = new HashSet<>(note.getPythonTags());
-            allTags.addAll(note.getTags());
+            Set<String> allTags = note.getAllTags();
             for (String tag : allTags) {
                 tagsToNotes.computeIfAbsent(tag, ignore -> Sets.newConcurrentHashSet())
                         .add(note);
@@ -127,6 +125,7 @@ public class TopicExtractor {
         SparseMatrix graph = new SparseMatrix();
 
         AtomicInteger tagIndex = new AtomicInteger();
+        AtomicInteger edges = new AtomicInteger();
         tagsOccurences.forEach((tag1, connectedNodes) -> {
             connectedNodes.forEach((tag2, weight) -> {
                 if (weight.get() >= minWeight) {
@@ -135,9 +134,11 @@ public class TopicExtractor {
 
                     graph.add(id1, id2, weight.get());
                     graph.add(id2, id1, weight.get());
+                    edges.incrementAndGet();
                 }
             });
         });
+        System.out.println(String.format("Generated graph with %d edges and %d vertexes", edges.get(), tagIndex.get()));
         return graph;
     }
 }

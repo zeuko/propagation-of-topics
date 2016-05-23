@@ -23,12 +23,12 @@ if __name__ == '__main__':
     tagsCount = defaultdict(int)
 
     for note in notes:
-		if args.tag in note['tags']: 
-			for tag in note['tags']:
-				tagsCount[tag.lower()] += 1
+        if args.tag in note['tags']:
+            for tag in note['tags']:
+                tagsCount[tag.lower()] += 1
 
     items = filter(lambda pair: pair[1] > 5,
                    sorted(tagsCount.items(), key=lambda pair: pair[1])
-                  )
+                   )
     for item in items:
         print(item)

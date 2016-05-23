@@ -12,17 +12,17 @@ public class Topic {
     private String name;
     private List<String> tags;
     private int size;
-    private List<Note> notes;
-    private int notes_size;
+    private List<Long> notes;
+    private int notesSize;
     private String algorithm;
     private int minCommonTopics;
 
-    public Topic(String name, List<String> tags, int size, List<Note> notes, int notes_size, String algorithm, int minCommonTopics) {
+    public Topic(String name, List<String> tags, int size, List<Long> notes, int notesSize, String algorithm, int minCommonTopics) {
         this.name = name;
         this.tags = tags;
         this.size = size;
         this.notes = notes;
-        this.notes_size = notes_size;
+        this.notesSize = notesSize;
         this.algorithm = algorithm;
         this.minCommonTopics = minCommonTopics;
     }
@@ -59,20 +59,20 @@ public class Topic {
         this.size = size;
     }
 
-    public List<Note> getNotes() {
+    public List<Long> getNotes() {
         return notes;
     }
 
-    public void setNotes(List<Note> notes) {
+    public void setNotes(List<Long> notes) {
         this.notes = notes;
     }
 
-    public int getNotes_size() {
-        return notes_size;
+    public int getNotesSize() {
+        return notesSize;
     }
 
-    public void setNotes_size(int notes_size) {
-        this.notes_size = notes_size;
+    public void setNotesSize(int notesSize) {
+        this.notesSize = notesSize;
     }
 
     public String getAlgorithm() {
