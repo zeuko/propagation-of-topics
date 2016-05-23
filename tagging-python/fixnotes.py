@@ -20,15 +20,13 @@ if __name__ == '__main__':
     notes = notesCollection.find({'language': 'EN'})
 
     for note in notes:
-		tags =  set()
-		for tag in note['tags']:
-			if tag == "ap" or tag == "monkeys":
-				continue;
-			try:
-				tags.add(tag.lower())
-			except:
-				print(tag)
-		note['tags'] = list(tags)
-		notesCollection.update({'_id': note['_id']}, note)
-
-    
+        tags = set()
+        for tag in note['tags']:
+            if tag == "ap" or tag == "monkeys":
+                continue;
+            try:
+                tags.add(tag.lower())
+            except:
+                print(tag)
+        note['tags'] = list(tags)
+        notesCollection.update({'_id': note['_id']}, note)
