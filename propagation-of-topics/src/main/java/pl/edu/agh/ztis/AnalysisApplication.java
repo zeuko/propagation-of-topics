@@ -3,6 +3,7 @@ package pl.edu.agh.ztis;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 import org.kohsuke.args4j.CmdLineException;
@@ -42,5 +43,10 @@ public class AnalysisApplication {
 	private List<Note> getNotes() {
 		return noteRepository.findByText1Containing("Obama");
 		
+	}
+	
+	// zwraca notki zawierajace tagi z listy tags
+	private List<Note> getCluster(List<String> tags, List<Note> notes) {
+		return notes.stream().filter(note -> note.getAllTags().containsAll(tags)).collect(Collectors.toList());
 	}
 }
