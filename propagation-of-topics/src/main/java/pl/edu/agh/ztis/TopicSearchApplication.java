@@ -47,6 +47,6 @@ public class TopicSearchApplication {
     private void test() throws Exception {
         List<Note> notes = noteRepository.findAllByLanguage(language);
         List<Topic> topics = topicExtractor.extractTopics(notes, weight);
-        topicsRepository.save(topics);
+        topics.forEach(topicsRepository::save);
     }
 }

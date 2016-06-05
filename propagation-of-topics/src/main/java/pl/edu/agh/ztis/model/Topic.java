@@ -1,5 +1,6 @@
 package pl.edu.agh.ztis.model;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -25,6 +26,7 @@ public class Topic {
         this.notesSize = notesSize;
         this.algorithm = algorithm;
         this.minCommonTopics = minCommonTopics;
+        this.id = new HashSet<>(tags).hashCode();
     }
 
     public long getId() {

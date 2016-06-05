@@ -51,7 +51,7 @@ public class TopicExtractor {
         long time1 = System.currentTimeMillis();
         SparseMatrix graph = generateGraph(notes, minWeight);
         long time2 = System.currentTimeMillis();
-        System.out.println("Graph loaded in " + 0.0001 * (time2 - time1) + "s");
+        System.out.println("Graph loaded in " + 0.001 * (time2 - time1) + "s");
 
         SparseMatrix resultMatrix = new MarkovClustering()
                 .run(graph, maxResidual, pGamma, loopGain, maxZero);
@@ -60,8 +60,13 @@ public class TopicExtractor {
         List<Set<String>> topics = extractResults(resultMatrix);
         List<Topic> result = topics.stream()
                 .map(topicTags -> {
-                    List<Long> notesForThisTags = notes.stream()
-                            .filter(note -> note.getAllTags().containsAll(topicTags))
+                    List<Long> notesForThisTags = topicTags.stream()
+                            .filter(s -> s!=null)
+                            .map(tagsToNotes::get)
+                            .filter(s -> s!=null)
+                            .flatMap(Set::stream)
+                            .filter(s -> s!=null)
+                            .distinct()
                             .map(Note::getId)
                             .collect(Collectors.toList());
                     System.out.println(notesForThisTags.size() + " ----> " + topicTags.stream().collect(Collectors.joining(", ")));
