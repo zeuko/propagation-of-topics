@@ -74,7 +74,7 @@ public class AnalysisApplication {
                     List<Note> notes = topic.getNotes().stream().map(notesMap::get).collect(Collectors.toList());
 
                     Map<DateTime, Integer> result = analysisTool.getNotesTimeAnalysis(notes, TimeAnalysisWindow.WEEK);
-                    out.println(result);
+                    result.forEach((dateTime, integer) -> out.println(dateTime + "," + integer));
                     out.println();
                 });
     }
