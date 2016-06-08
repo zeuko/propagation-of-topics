@@ -30,21 +30,15 @@ public class NoteTaggingApplication {
 	@Autowired
 	private TagNotes notesTagger;
 	
-	
-
 	public static void main(String[] args) throws Exception {
 		@SuppressWarnings("resource")
 		ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
-
 		NoteTaggingApplication app = context.getBean(NoteTaggingApplication.class);
 		app.test();
-		
 	}
-
 
 	private void test() throws Exception {
 		List<Note> notes = noteRepository.findByLanguage(Language.EN);
-		System.out.println(notes.size());
 		notesTagger.tagNotes(notes, MAUI_TAG_LIMIT_PER_TEXT);
 	}
 }

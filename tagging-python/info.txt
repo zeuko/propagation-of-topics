@@ -1,2 +1,0 @@
-Pliki x_tag_analysis.txt zawieraj¹ tagi towarzysz¹ce tagowi x, do dalszej analzy.
-Wygenerowane skryptem tag_analysis.py.
